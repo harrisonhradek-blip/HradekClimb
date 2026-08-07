@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log Climbs, Sends
+{% endblock %}
+
+{% block main %}
+    <!-- Log A Session, by number of climbs, will redirect to fill in info for each climb: -->
+
+
+    <div class="card" style="padding: 20px;">
+        <div class="d-flex align-items-start" style="gap: 20px;">
+            <div class="card-body" style="flex: 0 0 auto;">
+                <div class="card" style="width: 18rem;">
+                    <ul class="list-group list-group-flush">
+                    {% for row in monthly_highest %}
+                    <li class="list-group-item">{{ row.month }}'s hardest was: V{{ row.hardest }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="card" style="width: 18rem; margin-top: 25px;">
+                    <ul class="list-group list-group-flush">
+                        {% for grade in avg_attempts %}
+                        <li class="list-group-item">V{{ grade.grade }} Average attempts: {{ grade.avg_attempts }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div style="flex: 1 1 auto; min-width: 300px;">
+                <canvas id="volumeChart"></canvas>
+            </div>
+            <div class="card" style="padding: 20px; margin-bottom: 20px; text-align: left;">
+                <h5 class="card-title">Log Session</h5>
+                <div class="card-body" style="flex: 0 0 auto;">
+                    <form action="/log_session" method="post">
+                            <label for="climbs" class="form-label">Number Of Climbs</label>
+                            <input type="climbs" class="form-control" name="climbs">
+                            <button type="log_session" class="btn btn-primary" style="margin: 30px;">Go to Log session</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Display existing climbs and sends -->
+    <table class="table table-sm" style="margin-top: 25px;">
+        <thead>
+            <tr>
+                <th scope="col">Session</th>
+                <th scope="col">Date</th>
+                <th scope="col">Climbs</th>
+                <th scope="col">Highest Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+            <tr>
+                <th scope="row">{{ session.session_id }}</th>
+                <td>{{ session.date }}</td>
+                <td>{{ session.climb_count }}</td>
+                <td>V{{ session.highest_sent }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Options like add climb, record sends, record sessions -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const volumeData = {{ volume | tojson }};
+
+    const labels = volumeData.map(row => row.month);
+    const counts = volumeData.map(row => row.climb_count);
+
+    const VolumeData = {
+      labels: labels,
+      datasets: [
+        {
+            label: 'Climbs Per Month',
+            data: counts,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        },
+      ]
+    };
+    const config = {
+    type: 'line',
+    data: VolumeData,
+    options: {
+        responsive: true,
+        plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'Climbing Volume Over Time'
+        }
+        }
+    },
+    };
+    new Chart(document.getElementById('volumeChart'), config);
+</script>
+{% endblock %}

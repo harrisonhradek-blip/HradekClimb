@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+<div class="center-vertical">
+    <div class="d-flex align-items-center justify-content-center flex-wrap gap-5">
+
+        <div class="text-start">
+            <h1 class="display-4 fw-bold">Welcome Back</h1>
+            <p class="text-muted">Track your climbs, sessions, and progress.</p>
+        </div>
+
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="/static/climbing.jpg" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">Login</h5>
+                <form action="/login" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="username" class="form-control" name="username" aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password">
+                    <div id="passwordHelp" class="form-text">Never share your password with anyone else.</div>
+
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin: 30px;">Submit</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
