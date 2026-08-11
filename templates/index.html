@@ -41,19 +41,29 @@
                 <th scope="col">Date</th>
                 <th scope="col">Climbs</th>
                 <th scope="col">Highest Grade</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
             {% for session in sessions %}
             <tr>
-                <th scope="row">{{ session.session_id }}</th>
+                <th scope="row" name="session_id">{{ session.session_id }}</th>
                 <td>{{ session.date }}</td>
                 <td>{{ session.climb_count }}</td>
                 <td>V{{ session.highest_sent }}</td>
+                <td><form action="/edit" method="get">
+                    <input type="hidden" name="session_id" value="{{ session.session_id }}">
+                    <button type="submit" class="btn btn-primary" style="margin: 30px;">Edit</button>
+                </form></td>
+                <td><form action="/" method="post">
+                    <input type="hidden" name="session_id" value="{{ session.session_id }}">
+                    <button type="submit" class="btn btn-primary" style="margin: 30px;">Delete</button>
+                </form></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {{ session.session_id }}
     <!-- Options like add climb, record sends, record sessions -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

@@ -3,7 +3,7 @@ import requests
 from flask import redirect, render_template, session
 from functools import wraps
 
-def login_required(f):
+def login_required(f): # copied from finance
     """
     Decorate routes to require login.
 

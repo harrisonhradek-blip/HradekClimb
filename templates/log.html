@@ -56,7 +56,7 @@
         <tbody>
             {% for session in sessions %}
             <tr>
-                <th scope="row">{{ session.session_id }}</th>
+                <th scope="row">{{ loop.index }}</th>
                 <td>{{ session.date }}</td>
                 <td>{{ session.climb_count }}</td>
                 <td>V{{ session.highest_sent }}</td>
