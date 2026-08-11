@@ -185,7 +185,7 @@ def register(): # register the user into the database (similar to finance)
             return redirect("/register")        
         
         if request.form.get("password") != request.form.get("confirmation"):
-            flash("Please use a valid username.", "danger")
+            flash("Passwords do not match.", "danger")
             return redirect("/register")         
         
         username = request.form.get("username")

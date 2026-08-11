@@ -59,7 +59,7 @@ Once the user gets bored of looking at a blank homepage, they will probably want
 
 Whenever the user clicks delete on any of the sessions `app.py` in the `/index` route is treated as a post method, this will just go one by one on each level of the data base deleting each one, starting with the climb data, then the session data, and then any reference to the data.
 
-## How HradekClimb is different (and similar) to finance
+## How HradekClimb is different (and similar) to finance:
 
 #### Different:
 
@@ -77,12 +77,64 @@ Whenever the user clicks delete on any of the sessions `app.py` in the `/index` 
 
 - Single user dashboard behind login, backed by SQLite via the cs50 library, server-rendered with Flask/Jinja, POST-redirect-GET pattern throughout. Structurally similar to Finance at a high level.
 
+## File Overview
+
+- **`app.py`**: the Flask application. Defines every route: `/` (the
+  dashboard, and the POST target for deleting a session), `/login`,
+  `/register`, `/logout`, `/log` (choose how many climbs to log), `/log_session`
+  (submit the generated climb form), and `/edit` (update an existing
+  session). This is where all the SQL queries are, wher computing hardest
+  grade, monthly stats, send rate, and volume, and reading/writing the
+  four database tables happens aswell.
+
+- **`helpers.py`**: holds the `login_required` decorator, adapted from
+  Finance, which wraps any route that should redirect to `/login` if
+  there's no active session.
+
+- **`climbing.db`**: the SQLite database, with four tables: `users`,
+  `user_sessions`, `session_climbs`, and `climb_data`. See the "How the
+  database stores data" section above for the schema.
+
+- **`seed_data.py`**: an optional script that populates `climbing.db`
+  with sample sessions for the `test` user, so the dashboard has data to
+  show instead of starting empty. Safe to re-run.
+
+- **`requirements.txt`**: the Python packages needed to run the app
+  (`cs50`, `Flask`, `Flask-Session`).
+
+- **`templates/layout.html`**: the shared page shell every other
+  template extends: navbar (which changes based on whether you're
+  logged in), flashed-message banners, and the Bootstrap/Chart.js CDN
+  links.
+
+- **`templates/index.html`**: the dashboard: monthly-highest-grade
+  list, average-attempts-per-grade list, the Chart.js volume line
+  graph, and the session table with its Edit/Delete buttons.
+
+- **`templates/log.html`**: shown when you click "Log session"; lets
+  you pick how many climbs you're about to log before generating the
+  form for them.
+
+- **`templates/log_session.html`**: the generated form itself, with
+  one row of inputs (hours, grade, sent, attempts) per climb.
+
+- **`templates/edit.html`**: lets you update the climbs in an existing
+  session.
+
+- **`templates/login.html`** / **`templates/register.html`** — standard
+  login and registration forms.
+
+- **`static/styles.css`**: custom styling on top of Bootstrap.
+
+- **`static/climbing.jpg`** / **`static/climbing.ico`**: background
+  image and favicon.
+
 ## Notes:
 
- - 799 words
+ - 961 words (didn't count overview or sample data)
  - Sample data done by ai (claude)
 
- ## Sample Data (optional)
+ ## Sample Data (optional):
 
 If you'd like to see the dashboard populated with data instead of starting
 from a blank homepage, a seed script is included.
