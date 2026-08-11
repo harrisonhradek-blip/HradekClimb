@@ -141,7 +141,8 @@ def login():
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
-            return 403
+            flash("Password or Username is Incorrect.", "danger")
+            return redirect("/login")  
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
@@ -180,8 +181,8 @@ def register():
             )
             return redirect("/")
         except ValueError:
-            return 400
-        
+            flash("Something went Wrong.", "danger")
+            return redirect("/login")          
     else:
         return render_template("register.html")
 
@@ -196,14 +197,14 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
-@app.route("/log")
+@app.route("/log", methods=["GET", "POST"])
 def log():
-
     if request.method == "POST":
-
-
-        request.form.get("")
-        return
+        climbs = request.form.get("climbs")
+        if not climbs or not climbs.isdigit():
+            flash("Please enter a valid number of climbs.", "danger")
+            return redirect("/log")
+        return render_template("log_session.html", climbs=int(climbs))
     else:
 
         # Get data of all climbs from every session where the id is the user's id
@@ -287,12 +288,57 @@ def log():
                                volume=volume
                                )  
 
-@app.route("/log_session")
+@app.route("/log_session", methods=["GET", "POST"])
 def log_session():
     if request.method == "POST":
-        
+        #check for dummy select
 
-        request.form.get("")
-        return
+        for i in request.form.getlist("send[]"):
+            if i == "Select":
+                flash("Please select a ""send"".", "danger")
+                return redirect("/log_session")   
+        for i in request.form.getlist("grade[]"):
+            if i == "grade":
+                flash("Please select a ""grade"".", "danger")
+                return redirect("/log_session")   
+
+
+        climb_data = []
+
+        hours = request.form.getlist("hours[]")
+        grade = request.form.getlist("grade[]")
+        grade_numeric = [int(i[1:]) for i in grade]        
+        sent = [1 if s == "yes" else 0 for s in request.form.getlist("sent[]")]
+        attempts = request.form.getlist("attempts[]")
+
+        climbs = int(request.form.get("climbs"))
+        for climb in range(climbs):
+            climb_data.append({
+                "climb" : climb,
+                "hours" : hours[climb],
+                "grade" : grade[climb],
+                "grade_numeric" : grade_numeric[climb],
+                "sent" : sent[climb],
+                "attempts" : attempts[climb]
+            })
+
+
+        session_id = db.execute(
+            "INSERT INTO user_sessions (user_id) VALUES(?)",
+            session["user_id"]
+        )
+        for climb in climb_data:
+            db.execute("""
+                INSERT INTO session_climbs (session_id, hours) VALUES(?, ?)
+            """, session_id, climb["hours"])
+
+            db.execute("""
+                INSERT INTO climb_data (grade, grade_numeric, sent, attempts) VALUES(?, ?, ?, ?)
+            """, climb["grade"], climb["grade_numeric"], climb["sent"], climb["attempts"])
+
+        
+        print("post")
+        return redirect("/") #TODO
     else:
-        return redirect ("log.html")
+        print("else")
+        return redirect("/") #TODO

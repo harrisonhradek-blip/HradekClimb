@@ -1,6 +1,14 @@
-flask_session/9ad7c90000f256d174f39fb31bb54288
-__pycache__/helpers.cpython-314.pyc
-flask_session/2029240f6d1128be89ddc32729463129
-static/.DS_Store
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Flask session files (contain session tokens, regenerate on every run)
+flask_session/
+
+# OS junk
 .DS_Store
-__pycache__/app.cpython-314.pyc
+
+# Editor settings
+.vscode/
